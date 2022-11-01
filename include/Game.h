@@ -1,8 +1,9 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+#include "State.h"
 
 #include "Player.h"
+#include <stack>
 
 namespace pacman
 {
@@ -14,6 +15,8 @@ public:
     Game();
     void initVariables();
     void initWindow();
+    void inintStates();
+    void updateTime();
     void update();
     void render();
     bool running() const;
@@ -21,11 +24,16 @@ public:
 
 private:
     
-    std::unique_ptr<sf::RenderWindow> m_window;
+    std::stack<std::unique_ptr<State>> m_states;
+
+    std::shared_ptr<sf::RenderWindow> m_window;
     sf::Event m_event;
     sf::VideoMode m_videoMode;
 
-    PlayerPtr m_player = std::make_unique<Player>();
+    float m_deltaTime;
+    sf::Clock m_clock;
+
+    PlayerPtr m_player;
     RenderShape m_map;
 };
 } //namespace

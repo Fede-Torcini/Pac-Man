@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Constants.h"
+#include <iostream>
 
 namespace pacman
 {
@@ -7,6 +8,7 @@ namespace pacman
 Game::Game()
     : m_videoMode({constants::WINDOW_WIDTH,constants::WINDOW_HEIGHT})
     , m_map(constants::MAP_TEXTURE_DIRECTORY)
+    , m_player(std::make_unique<Player>())
 {
     this->initVariables();
     this->initWindow();
@@ -23,14 +25,20 @@ void Game::initVariables()
 
 void Game::initWindow()
 {
-    m_window = std::make_unique<sf::RenderWindow>(m_videoMode, constants::WINDOW_NAME);
+    m_window = std::make_shared<sf::RenderWindow>(m_videoMode, constants::WINDOW_NAME);
 
     m_window->setFramerateLimit(60);
+    m_window->setVerticalSyncEnabled(false);
 }
 
+void initStates()
+{
+    //m_states.push();
+}
 
 void Game::update()
 {
+    this->updateTime();
     this->pollEvents();
     m_player->move();
 }
@@ -40,10 +48,17 @@ void Game::render()
 {
     m_window->clear();
 
-    m_window->draw(m_map);
-    m_window->draw(m_player->draw());
+    if (m_states.empty())
+    {
+        //m_states.top()->render();
+    }
 
     m_window->display();
+}
+
+void Game::updateTime()
+{
+    m_deltaTime = m_clock.restart().asMilliseconds();
 }
 
 
@@ -83,6 +98,8 @@ void Game::pollEvents()
                 break;
             }
             break;
+        case sf::Event::MouseButtonPressed:
+            std::cout << m_event.mouseButton.x << " , " << m_event.mouseButton.y << "\n";
         } 
     }
 }
